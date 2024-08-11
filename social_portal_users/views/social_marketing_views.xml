@@ -1,0 +1,64 @@
+<odoo>
+
+    <record id="view_social_account_tree" model="ir.ui.view">
+        <field name="name">social.account.tree</field>
+        <field name="model">social.account</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="social_network"/>
+                <field name="user_id" invisible="1"/>
+            </tree>
+            <field name="domain">[('user_id', '=', uid)]</field> <!-- Filter by the current user -->
+        </field>
+    </record>
+
+    <record id="view_social_campaign_tree" model="ir.ui.view">
+        <field name="name">social.campaign.tree</field>
+        <field name="model">social.campaign</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="social_account_id"/>
+                <field name="state"/>
+                <field name="user_id" invisible="1"/>
+            </tree>
+            <field name="domain">[('user_id', '=', uid)]</field> <!-- Filter by the current user -->
+        </field>
+    </record>
+
+    <record id="view_social_account_form" model="ir.ui.view">
+        <field name="name">social.account.form</field>
+        <field name="model">social.account</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="user_id" invisible="1"/>
+                    <field name="name"/>
+                    <field name="social_network"/>
+                    <field name="login"/>
+                    <field name="password"/>
+                    <!-- Add other fields as necessary -->
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_social_campaign_form" model="ir.ui.view">
+        <field name="name">social.campaign.form</field>
+        <field name="model">social.campaign</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="user_id" invisible="1"/>
+                    <field name="name"/>
+                    <field name="social_account_id"/>
+                    <field name="content"/>
+                    <field name="state"/>
+                    <!-- Add other fields as necessary -->
+                </group>
+                <field name="domain">[('user_id', '=', uid)]</field> <!-- Filter by the current user -->
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,10 @@
+<odoo>
+    <data noupdate="1">
+        <record id="payment_acquirer_globalpay" model="payment.acquirer">
+            <field name="name">Global Payments</field>
+            <field name="provider">globalpay</field>
+            <field name="state">test</field>
+            <field name="view_template_id" ref="payment_globalpay.view_payment_acquirer_globalpay_form"/>
+        </record>
+    </data>
+</odoo>
