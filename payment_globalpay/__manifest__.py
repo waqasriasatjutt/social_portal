@@ -1,13 +1,14 @@
 {
-    'name': 'Global Payments Gateway',
+    'name': 'Payment Provider: Global Payments',
+    'category': 'Accounting/Payment Providers',
     'version': '1.0',
-    'category': 'Accounting',
-    'summary': 'Integrate Global Payments with Odoo 17',
-    'description': 'Module for integrating Global Payments API with Odoo 17',
+    'sequence': 350,
+    'summary': "Integration with Global Payments.",
     'depends': ['payment'],
     'data': [
-        'views/payment_views.xml',
-        'data/payment_acquirer_data.xml',
+        'views/payment_globalpay_templates.xml',
+        'views/payment_provider_views.xml',
+        'data/payment_provider_data.xml',
     ],
-    'installable': True,
+    'license': 'LGPL-3',
 }

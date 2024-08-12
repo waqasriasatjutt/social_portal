@@ -1,0 +1,22 @@
+<odoo>
+    <record id="social_account_rule" model="ir.rule">
+        <field name="name">Social Account: Restrict to own</field>
+        <field name="model_id" ref="social.model_social_account"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="social_post_rule" model="ir.rule">
+        <field name="name">Social Post: Restrict to own</field>
+        <field name="model_id" ref="social.model_social_post"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="social_campaign_rule" model="ir.rule">
+        <field name="name">Social Campaign: Restrict to own</field>
+        <field name="model_id" ref="social.model_social_media_campaign"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo>

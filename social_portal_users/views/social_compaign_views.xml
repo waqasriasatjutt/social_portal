@@ -1,0 +1,27 @@
+<odoo>
+    <record id="view_social_campaign_tree_inherit" model="ir.ui.view">
+        <field name="name">social.campaign.tree.inherit</field>
+        <field name="model">social.media.campaign</field>
+        <field name="inherit_id" ref="social.view_social_campaign_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="create">False</attribute>
+                <attribute name="delete">False</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="user_id" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_social_campaign_form_inherit" model="ir.ui.view">
+        <field name="name">social.campaign.form.inherit</field>
+        <field name="model">social.media.campaign</field>
+        <field name="inherit_id" ref="social.view_social_campaign_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <field name="user_id" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
