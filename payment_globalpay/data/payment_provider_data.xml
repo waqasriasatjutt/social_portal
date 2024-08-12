@@ -5,7 +5,6 @@
             <field name="name">Global Payments</field>
             <field name="code">globalpay</field>
             <field name="state">enabled</field>
-            <field name="globalpay_service_url">https://pay.sandbox.realexpayments.com/pay</field>
             <field name="module_id" ref="base.module_payment_globalpay"/>
             <field name="payment_method_ids" eval="[(6, 0, [ref('payment.payment_method_card')])]"/>
             <field name="redirect_form_view_id" ref="redirect_form"/>
