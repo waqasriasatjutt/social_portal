@@ -4,9 +4,7 @@ from odoo.exceptions import ValidationError
 class SocialPost(models.Model):
     _inherit = 'social.post'
 
-    # Adding new fields or methods if necessary
     campaign_name = fields.Char(string="Campaign Name")
-
     user_id = fields.Many2one(related='account_ids.user_id', store=True, readonly=True)
 
     @api.model

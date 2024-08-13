@@ -1,0 +1,25 @@
+<odoo>
+    <record id="view_social_stream_post_tree_inherit" model="ir.ui.view">
+        <field name="name">social.stream.post.tree.inherit</field>
+        <field name="model">social.stream.post</field>
+        <field name="inherit_id" ref="social.social_stream_post_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='message']" position="after">
+                <field name="user_id" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_social_stream_post_form_inherit" model="ir.ui.view">
+        <field name="name">social.stream.post.form.inherit</field>
+        <field name="model">social.stream.post</field>
+        <field name="inherit_id" ref="social.social_stream_post_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group>
+                    <field name="user_id" invisible="1"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

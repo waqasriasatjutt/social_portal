@@ -1,5 +1,4 @@
 <odoo>
-
     <record id="view_social_account_tree_inherit" model="ir.ui.view">
         <field name="name">social.account.tree.inherit</field>
         <field name="model">social.account</field>
@@ -10,7 +9,6 @@
             </xpath>
         </field>
     </record>
-
 
     <record id="view_social_account_form_inherit" model="ir.ui.view">
         <field name="name">social.account.form.inherit</field>
@@ -24,5 +22,4 @@
             </xpath>
         </field>
     </record>
-
 </odoo>
