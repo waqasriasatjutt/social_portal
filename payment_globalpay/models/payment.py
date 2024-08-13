@@ -18,6 +18,23 @@ class PaymentProviderGlobalPay(models.Model):
         signature = hmac.new(self.globalpay_shared_secret.encode(), message.encode(), hashlib.sha256).digest()
         return base64.b64encode(signature).decode()
 
+    def _send_payment_request(self):
+        """ Override of payment to simulate a payment request.
+
+        Note: self.ensure_one()
+
+        :return: None
+        """
+        super()._send_payment_request()
+        if self.provider_code != 'demo':
+            return 'https://pay.sandbox.realexpayments.com/pay'
+
+        if not self.token_id:
+            return 'https://pay.sandbox.realexpayments.com/pay'
+
+        return 'https://pay.sandbox.realexpayments.com/pay'
+
+
     def _globalpay_get_api_url(self):
         if self.state == 'enabled':
             return self.globalpay_service_url
