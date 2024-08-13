@@ -1,27 +1,24 @@
 <odoo>
-
-<!--    <record id="view_social_post_tree_inherit" model="ir.ui.view">-->
-<!--        <field name="name">social.post.tree.inherit</field>-->
-<!--        <field name="model">social.post</field>-->
-<!--        <field name="inherit_id" ref="social.view_social_post_tree"/>-->
-<!--        <field name="arch" type="xml">-->
-<!--            <xpath expr="//tree" position="attributes">-->
-<!--                <attribute name="create">False</attribute>-->
-<!--                <attribute name="delete">False</attribute>-->
-<!--            </xpath>-->
-<!--            <xpath expr="//field[@name='account_ids']" position="attributes">-->
-<!--                <attribute name="domain">[('user_id', '=', uid)]</attribute>-->
-<!--            </xpath>-->
-<!--        </field>-->
-<!--    </record>-->
+    <record id="view_social_post_tree_inherit" model="ir.ui.view">
+        <field name="name">social.post.tree.inherit</field>
+        <field name="model">social.post</field>
+        <field name="inherit_id" ref="social.social_post_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='message']" position="after">
+                <field name="user_id" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
 
     <record id="view_social_post_form_inherit" model="ir.ui.view">
         <field name="name">social.post.form.inherit</field>
         <field name="model">social.post</field>
         <field name="inherit_id" ref="social.social_post_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//sheet" position="before">
-                <field name="user_id" invisible="1"/>
+            <xpath expr="//sheet" position="inside">
+                <group>
+                    <field name="user_id" invisible="1"/>
+                </group>
             </xpath>
         </field>
     </record>

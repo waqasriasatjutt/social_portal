@@ -1,17 +1,25 @@
 <odoo>
-    <data> <!-- Encapsulates all view definitions -->
-        <record id="view_social_account_tree" model="ir.ui.view">
-            <field name="name">social.stream.post.tree</field>
-            <field name="model">social.stream.post</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <!-- Uncomment these fields if needed -->
-<!--                     <field name="name"/>-->
-<!--                     <field name="social_network"/>-->
+    <record id="view_social_stream_post_tree_inherit" model="ir.ui.view">
+        <field name="name">social.stream.post.tree.inherit</field>
+        <field name="model">social.stream.post</field>
+        <field name="inherit_id" ref="social.social_stream_post_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='message']" position="after">
+                <field name="user_id" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_social_stream_post_form_inherit" model="ir.ui.view">
+        <field name="name">social.stream.post.form.inherit</field>
+        <field name="model">social.stream.post</field>
+        <field name="inherit_id" ref="social.social_stream_post_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group>
                     <field name="user_id" invisible="1"/>
-                </tree>
-            </field>
-<!--                        <field name="domain">[('user_id', '=', uid)]</field> &lt;!&ndash; Filter by the current user &ndash;&gt;-->
-        </record>
-    </data>
+                </group>
+            </xpath>
+        </field>
+    </record>
 </odoo>
