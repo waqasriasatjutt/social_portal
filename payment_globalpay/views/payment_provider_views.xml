@@ -1,3 +1,4 @@
+<!-- views/payment_provider_views.xml -->
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="payment_provider_form" model="ir.ui.view">
@@ -7,10 +8,10 @@
         <field name="arch" type="xml">
             <group name="provider_credentials" position="inside">
                 <group invisible="code != 'globalpay'">
-                    <field name="globalpay_merchant_id"/>
-                    <field name="globalpay_account_id"/>
-                    <field name="globalpay_shared_secret" password="True"/>
-                    <field name="globalpay_service_url"/>
+                    <field name="globalpay_merchant_id" string="Merchant ID" required="code == 'globalpay' and state != 'disabled'"/>
+                    <field name="globalpay_account_id" string="Account ID" required="code == 'globalpay' and state != 'disabled'"/>
+                    <field name="globalpay_shared_secret" string="Shared Secret" required="code == 'globalpay' and state != 'disabled'" password="True"/>
+                    <field name="globalpay_service_url" string="Service URL" required="code == 'globalpay' and state != 'disabled'"/>
                 </group>
             </group>
         </field>

@@ -8,9 +8,10 @@
     'data': [
         'security/social_security.xml',
         'security/ir.model.access.csv',
-        'views/social_account_views.xml',
-        'views/social_post_views.xml',
-        'views/social_campaign_views.xml',
+        'views/social_account.xml',
+        'views/social_post.xml',
+        'views/social_compaign_views.xml',
+        'views/social_marketing_views.xml',
     ],
     'installable': True,
     'application': True,

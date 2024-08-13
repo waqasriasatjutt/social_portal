@@ -2,7 +2,7 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
 class SocialCampaign(models.Model):
-    _inherit = 'social.media.campaign'  # Ensure this is the correct model name for Odoo 17
+    _inherit = 'utm.campaign'  # Ensure this is the correct model name for Odoo 17
 
     user_id = fields.Many2one('res.users', string='Owner', default=lambda self: self.env.user, required=True)
 

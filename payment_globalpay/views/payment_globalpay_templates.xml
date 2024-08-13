@@ -1,16 +1,12 @@
+<!-- views/payment_globalpay_templates.xml -->
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="redirect_form">
-        <form t-att-action="globalpay_url" method="post">
-            <input type="hidden" name="MERCHANT_ID" t-att-value="MERCHANT_ID"/>
-            <input type="hidden" name="ACCOUNT" t-att-value="ACCOUNT"/>
-            <input type="hidden" name="ORDER_ID" t-att-value="ORDER_ID"/>
-            <input type="hidden" name="AMOUNT" t-att-value="AMOUNT"/>
-            <input type="hidden" name="CURRENCY" t-att-value="CURRENCY"/>
-            <input type="hidden" name="TIMESTAMP" t-att-value="TIMESTAMP"/>
-            <input type="hidden" name="RETURN_URL" t-att-value="RETURN_URL"/>
-            <input type="hidden" name="AUTO_SETTLE_FLAG" t-att-value="AUTO_SETTLE_FLAG"/>
-            <input type="hidden" name="SHA1HASH" t-att-value="SHA1HASH"/>
+        <!-- Global Payments generates a unique URL for each payment request -->
+        <form t-att-action="api_url" method="get">
+            <t t-foreach="url_params" t-as="param">
+                <input type="hidden" t-att-name="param" t-att-value="url_params[param]" />
+            </t>
         </form>
     </template>
 </odoo>

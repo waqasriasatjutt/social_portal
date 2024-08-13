@@ -1,27 +1,28 @@
 <odoo>
+
     <record id="view_social_account_tree_inherit" model="ir.ui.view">
         <field name="name">social.account.tree.inherit</field>
         <field name="model">social.account</field>
-        <field name="inherit_id" ref="social.view_social_account_tree"/>
+        <field name="inherit_id" ref="social.social_account_view_list"/>
         <field name="arch" type="xml">
-            <xpath expr="//tree" position="attributes">
-                <attribute name="create">False</attribute>
-                <attribute name="delete">False</attribute>
-            </xpath>
             <xpath expr="//field[@name='name']" position="after">
                 <field name="user_id" invisible="1"/>
             </xpath>
         </field>
     </record>
 
+
     <record id="view_social_account_form_inherit" model="ir.ui.view">
         <field name="name">social.account.form.inherit</field>
         <field name="model">social.account</field>
-        <field name="inherit_id" ref="social.view_social_account_form"/>
+        <field name="inherit_id" ref="social.social_account_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//sheet" position="before">
-                <field name="user_id" invisible="1"/>
+            <xpath expr="//sheet" position="inside">
+                <group>
+                    <field name="user_id" invisible="1"/>
+                </group>
             </xpath>
         </field>
     </record>
+
 </odoo>

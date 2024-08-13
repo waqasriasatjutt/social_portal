@@ -4,11 +4,14 @@ from odoo.exceptions import ValidationError
 class SocialPost(models.Model):
     _inherit = 'social.post'
 
-    user_id = fields.Many2one(related='account_id.user_id', store=True, readonly=True)
+    # Adding new fields or methods if necessary
+    campaign_name = fields.Char(string="Campaign Name")
+
+    user_id = fields.Many2one(related='account_ids.user_id', store=True, readonly=True)
 
     @api.model
     def create(self, vals):
-        account = self.env['social.account'].browse(vals.get('account_id'))
+        account = self.env['social.account'].browse(vals.get('account_ids'))
         if account.user_id != self.env.user:
             raise ValidationError("You cannot create a post for an account you do not own.")
         return super(SocialPost, self).create(vals)
