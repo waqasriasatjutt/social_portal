@@ -1,0 +1,8 @@
+<odoo>
+    <record id="acquirer_globalpayments" model="payment.acquirer">
+        <field name="name">Global Payments UK</field>
+        <field name="provider">globalpayments_uk</field>
+        <field name="state">test</field>
+        <field name="view_template_id" ref="payment_globalpayments.redirect"/>
+    </record>
+</odoo>

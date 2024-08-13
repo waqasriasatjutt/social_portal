@@ -1,0 +1,15 @@
+<odoo>
+    <record id="view_payment_acquirer_globalpayments_uk" model="ir.ui.view">
+        <field name="name">payment.acquirer.form.globalpayments_uk</field>
+        <field name="model">payment.acquirer</field>
+        <field name="inherit_id" ref="payment.view_payment_acquirer_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='provider_configuration']" position="inside">
+                <div name="globalpayments_uk_config" attrs="{'invisible': [('provider', '!=', 'globalpayments_uk')]}">
+                    <field name="globalpayments_api_key"/>
+                    <field name="globalpayments_environment"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

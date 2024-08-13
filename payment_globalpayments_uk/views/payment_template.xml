@@ -1,0 +1,8 @@
+<odoo>
+    <template id="payment_globalpayments_redirect" name="Global Payments Redirect">
+        <form action="#" method="post" id="globalpayments_redirect_form">
+            <input type="hidden" name="payment_url" t-att-value="payment_url"/>
+            <button type="submit">Proceed to Payment</button>
+        </form>
+    </template>
+</odoo>

@@ -1,0 +1,8 @@
+<odoo>
+    <data>
+        <record id="payment_provider_globalpayments" model="payment.provider">
+            <field name="name">Global Payments UK</field>
+            <field name="provider">globalpayments_uk</field>
+        </record>
+    </data>
+</odoo>
