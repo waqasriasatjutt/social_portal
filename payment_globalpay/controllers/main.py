@@ -5,10 +5,8 @@ class GlobalPayController(http.Controller):
     _return_url = '/payment/globalpay/return'
 
 
-    @http.route('/shop/payment', type='http', auth='public', website=True, sitemap=False)
-    def shop_payment(self, **post):
-        return 'https://pay.sandbox.realexpayments.com/pay'
-
+    # @http.route('/shop/payment', type='http', auth='public', website=True, sitemap=False)
+    # def shop_payment(self, **post):
         # """ Payment step. This page proposes several payment means based on available
         # payment.provider. State at this point :
 
