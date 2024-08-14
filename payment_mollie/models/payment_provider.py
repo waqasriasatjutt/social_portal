@@ -9,7 +9,7 @@ from werkzeug import urls
 from odoo import _, fields, models, service
 from odoo.exceptions import ValidationError
 
-from odoo.addons.payment_global import const
+from odoo.addons.payment_mollie import const
 
 _logger = logging.getLogger(__name__)
 
@@ -18,12 +18,12 @@ class PaymentProvider(models.Model):
     _inherit = 'payment.provider'
 
     code = fields.Selection(
-        selection_add=[('global', 'Global')], ondelete={'global': 'set default'}
+        selection_add=[('mollie', 'Mollie')], ondelete={'mollie': 'set default'}
     )
-    global_api_key = fields.Char(
-        string="GLOBAL API Key",
+    mollie_api_key = fields.Char(
+        string="Mollie API Key",
         help="The Test or Live API Key depending on the configuration of the provider",
-        required_if_provider="global", groups="base.group_system"
+        required_if_provider="mollie", groups="base.group_system"
     )
 
     #=== BUSINESS METHODS ===#
@@ -31,14 +31,14 @@ class PaymentProvider(models.Model):
     def _get_supported_currencies(self):
         """ Override of `payment` to return the supported currencies. """
         supported_currencies = super()._get_supported_currencies()
-        if self.code == 'global':
+        if self.code == 'mollie':
             supported_currencies = supported_currencies.filtered(
                 lambda c: c.name in const.SUPPORTED_CURRENCIES
             )
         return supported_currencies
 
-    def _global_make_request(self, endpoint, data=None, method='POST'):
-        """ Make a request at global endpoint.
+    def _mollie_make_request(self, endpoint, data=None, method='POST'):
+        """ Make a request at mollie endpoint.
 
         Note: self.ensure_one()
 
@@ -51,13 +51,13 @@ class PaymentProvider(models.Model):
         """
         self.ensure_one()
         endpoint = f'/v2/{endpoint.strip("/")}'
-        url = urls.url_join('https://api.global.com/', endpoint)
+        url = urls.url_join('https://api.mollie.com/', endpoint)
 
         odoo_version = service.common.exp_version()['server_version']
-        module_version = self.env.ref('base.module_payment_globalpay').installed_version
+        module_version = self.env.ref('base.module_payment_mollie').installed_version
         headers = {
             "Accept": "application/json",
-            "Authorization": f'Bearer {self.global_api_key}',
+            "Authorization": f'Bearer {self.mollie_api_key}',
             "Content-Type": "application/json",
             # See https://docs.mollie.com/integration-partners/user-agent-strings
             "User-Agent": f'Odoo/{odoo_version} MollieNativeOdoo/{module_version}',
@@ -72,20 +72,20 @@ class PaymentProvider(models.Model):
                     "Invalid API request at %s with data:\n%s", url, pprint.pformat(data)
                 )
                 raise ValidationError(
-                    "Global: " + _(
-                        "The communication with the API failed. Global gave us the following "
+                    "Mollie: " + _(
+                        "The communication with the API failed. Mollie gave us the following "
                         "information: %s", response.json().get('detail', '')
                     ))
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             _logger.exception("Unable to reach endpoint at %s", url)
             raise ValidationError(
-                "Global: " + _("Could not establish the connection to the API.")
+                "Mollie: " + _("Could not establish the connection to the API.")
             )
         return response.json()
 
     def _get_default_payment_method_codes(self):
         """ Override of `payment` to return the default payment method codes. """
         default_codes = super()._get_default_payment_method_codes()
-        if self.code != 'global':
+        if self.code != 'mollie':
             return default_codes
         return const.DEFAULT_PAYMENT_METHODS_CODES

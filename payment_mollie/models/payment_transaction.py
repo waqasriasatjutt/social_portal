@@ -8,8 +8,8 @@ from werkzeug import urls
 from odoo import _, models
 from odoo.exceptions import ValidationError
 
-from odoo.addons.payment_globalpay import const
-from odoo.addons.payment_globalpay.controllers.main import MollieController
+from odoo.addons.payment_mollie import const
+from odoo.addons.payment_mollie.controllers.main import MollieController
 
 
 _logger = logging.getLogger(__name__)
@@ -28,12 +28,12 @@ class PaymentTransaction(models.Model):
         :rtype: dict
         """
         res = super()._get_specific_rendering_values(processing_values)
-        if self.provider_code != 'global':
+        if self.provider_code != 'mollie':
             return res
 
-        payload = self._mglobal_prepare_payment_request_payload()
+        payload = self._mollie_prepare_payment_request_payload()
         _logger.info("sending '/payments' request for link creation:\n%s", pprint.pformat(payload))
-        payment_data = self.provider_id._global_make_request('/payments', data=payload)
+        payment_data = self.provider_id._mollie_make_request('/payments', data=payload)
 
         # The provider reference is set now to allow fetching the payment status after redirection
         self.provider_reference = payment_data.get('id')
@@ -47,7 +47,7 @@ class PaymentTransaction(models.Model):
         url_params = urls.url_decode(parsed_url.query)
         return {'api_url': checkout_url, 'url_params': url_params}
 
-    def _global_prepare_payment_request_payload(self):
+    def _mollie_prepare_payment_request_payload(self):
         """ Create the payload for the payment request based on the transaction values.
 
         :return: The request payload
@@ -84,14 +84,14 @@ class PaymentTransaction(models.Model):
         :raise: ValidationError if the data match no transaction
         """
         tx = super()._get_tx_from_notification_data(provider_code, notification_data)
-        if provider_code != 'global' or len(tx) == 1:
+        if provider_code != 'mollie' or len(tx) == 1:
             return tx
 
         tx = self.search(
-            [('reference', '=', notification_data.get('ref')), ('provider_code', '=', 'global')]
+            [('reference', '=', notification_data.get('ref')), ('provider_code', '=', 'mollie')]
         )
         if not tx:
-            raise ValidationError("Global: " + _(
+            raise ValidationError("Mollie: " + _(
                 "No transaction found matching reference %s.", notification_data.get('ref')
             ))
         return tx
@@ -105,10 +105,10 @@ class PaymentTransaction(models.Model):
         :return: None
         """
         super()._process_notification_data(notification_data)
-        if self.provider_code != 'global':
+        if self.provider_code != 'mollie':
             return
 
-        payment_data = self.provider_id._global_make_request(
+        payment_data = self.provider_id._mollie_make_request(
             f'/payments/{self.provider_reference}', method="GET"
         )
 
@@ -130,12 +130,12 @@ class PaymentTransaction(models.Model):
         elif payment_status == 'paid':
             self._set_done()
         elif payment_status in ['expired', 'canceled', 'failed']:
-            self._set_canceled("Global: " + _("Canceled payment with status: %s", payment_status))
+            self._set_canceled("Mollie: " + _("Canceled payment with status: %s", payment_status))
         else:
             _logger.info(
                 "received data with invalid payment status (%s) for transaction with reference %s",
                 payment_status, self.reference
             )
             self._set_error(
-                "Global: " + _("Received data with invalid payment status: %s", payment_status)
+                "Mollie: " + _("Received data with invalid payment status: %s", payment_status)
             )
