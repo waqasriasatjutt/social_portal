@@ -21,6 +21,11 @@ class PaymentTransaction(models.Model):
     _inherit = 'payment.transaction'
 
 
+    def _get_timestamp(self):
+        """Generate a timestamp in the format YYYYMMDDHHMMSS."""
+        return datetime.utcnow().strftime('%Y%m%d%H%M%S')
+
+
     def _get_specific_rendering_values(self, processing_values):
         """ Override of payment to return Global Payments-specific rendering values.
 
