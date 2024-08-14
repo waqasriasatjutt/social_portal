@@ -70,8 +70,8 @@ class PaymentTransaction(models.Model):
             'SHA1HASH': self._generate_sha1_hash(),  # Custom method to generate the SHA1 hash
             'HPP_VERSION': '2',
             'HPP_CUSTOMER_COUNTRY': self.partner_country_id.code,  # Assuming country code is stored in the partner
-            'HPP_CUSTOMER_FIRSTNAME': self.partner_first_name,  # Assuming partner first name is available
-            'HPP_CUSTOMER_LASTNAME': self.partner_last_name,  # Assuming partner last name is available
+            'HPP_CUSTOMER_FIRSTNAME': self.partner_id.name,  # Assuming partner first name is available
+            'HPP_CUSTOMER_LASTNAME': self.partner_id.name,  # Assuming partner last name is available
             'MERCHANT_RESPONSE_URL': "http://165.227.98.165:8029/web",  # URL for response handling
             'HPP_TX_STATUS_URL': "http://165.227.98.165:8029/web",  # URL for transaction status handling
             'PM_METHODS': 'cards|paypal|testpay|sepapm|sofort',
