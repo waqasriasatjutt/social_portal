@@ -6,12 +6,12 @@ from odoo.tests import tagged
 from odoo.tools import mute_logger
 
 from odoo.addons.payment.tests.http_common import PaymentHttpCommon
-from odoo.addons.payment_globalpay.controllers.main import GlobalpayController
+from odoo.addons.payment_globalpay.controllers.main import MollieController
 from odoo.addons.payment_globalpay.tests.common import GlobalPayCommon
 
 
 @tagged('post_install', '-at_install')
-class globalpayTest(globalpayCommon, PaymentHttpCommon):
+class globalpayTest(GlobalPayCommon, PaymentHttpCommon):
 
     def test_payment_request_payload_values(self):
         tx = self._create_transaction(flow='redirect')
@@ -28,7 +28,7 @@ class globalpayTest(globalpayCommon, PaymentHttpCommon):
     def test_webhook_notification_confirms_transaction(self):
         """ Test the processing of a webhook notification. """
         tx = self._create_transaction('redirect')
-        url = self._build_url(globalpayController._webhook_url)
+        url = self._build_url(MollieController._webhook_url)
         with patch(
             'odoo.addons.payment_globalpay.models.payment_provider.PaymentProvider'
             '._globalpay_make_request',

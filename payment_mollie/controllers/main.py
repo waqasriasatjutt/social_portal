@@ -10,7 +10,7 @@ from odoo.http import request
 _logger = logging.getLogger(__name__)
 
 
-class MollieController(http.Controller):
+class GlobalpayController(http.Controller):
     _return_url = '/payment/mollie/return'
     _webhook_url = '/payment/mollie/webhook'
 
