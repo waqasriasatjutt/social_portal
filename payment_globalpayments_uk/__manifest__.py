@@ -7,9 +7,8 @@
     'category': 'Accounting/Payment',
     'depends': ['payment'],
     'data': [
-        'views/payment_acquirer_views.xml',
-        'views/payment_provider_views.xml',
-        'data/payment_acquirer_data.xml',
+        'views/payment_globalpayments_views.xml',
+        'data/payment_provider_data.xml',
         'security/ir.model.access.csv',
     ],
     'installable': True,

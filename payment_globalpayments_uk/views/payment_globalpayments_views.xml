@@ -1,0 +1,13 @@
+<odoo>
+    <record id="view_payment_provider_form_globalpayments" model="ir.ui.view">
+        <field name="name">payment.provider.form.globalpayments</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.view_provider_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='provider']" position="inside">
+                <field name="globalpayments_api_key"/>
+                <field name="globalpayments_environment"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
