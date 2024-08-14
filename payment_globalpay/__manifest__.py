@@ -12,6 +12,7 @@
     'data': [
         'views/payment_mollie_templates.xml',
         'views/payment_provider_views.xml',
+        'data/neutralize.sql',
 
         'data/payment_provider_data.xml',
     ],
