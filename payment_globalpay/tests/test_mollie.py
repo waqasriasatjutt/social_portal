@@ -1,0 +1,38 @@
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+from unittest.mock import patch
+
+from odoo.tests import tagged
+from odoo.tools import mute_logger
+
+from odoo.addons.payment.tests.http_common import PaymentHttpCommon
+from odoo.addons.payment_globalpay.controllers.main import GlobalpayController
+from odoo.addons.payment_globalpay.tests.common import GlobalPayCommon
+
+
+@tagged('post_install', '-at_install')
+class globalpayTest(globalpayCommon, PaymentHttpCommon):
+
+    def test_payment_request_payload_values(self):
+        tx = self._create_transaction(flow='redirect')
+
+        payload = tx._globalpay_prepare_payment_request_payload()
+
+        self.assertDictEqual(payload['amount'], {'currency': 'EUR', 'value': '1111.11'})
+        self.assertEqual(payload['description'], tx.reference)
+
+    @mute_logger(
+        'odoo.addons.payment_globalpay.controllers.main',
+        'odoo.addons.payment_globalpay.models.payment_transaction',
+    )
+    def test_webhook_notification_confirms_transaction(self):
+        """ Test the processing of a webhook notification. """
+        tx = self._create_transaction('redirect')
+        url = self._build_url(globalpayController._webhook_url)
+        with patch(
+            'odoo.addons.payment_globalpay.models.payment_provider.PaymentProvider'
+            '._globalpay_make_request',
+            return_value={'status': 'paid'},
+        ):
+            self._make_http_post_request(url, data=self.notification_data)
+        self.assertEqual(tx.state, 'done')
