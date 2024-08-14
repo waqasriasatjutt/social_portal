@@ -28,12 +28,12 @@ class PaymentTransaction(models.Model):
         :rtype: dict
         """
         res = super()._get_specific_rendering_values(processing_values)
-        if self.provider_code != 'global':
+        if self.provider_code != 'globalpay':
             return res
 
-        payload = self._mglobal_prepare_payment_request_payload()
+        payload = self._globalpay_prepare_payment_request_payload()
         _logger.info("sending '/payments' request for link creation:\n%s", pprint.pformat(payload))
-        payment_data = self.provider_id._global_make_request('/payments', data=payload)
+        payment_data = self.provider_id._globalpay_make_request('/payments', data=payload)
 
         # The provider reference is set now to allow fetching the payment status after redirection
         self.provider_reference = payment_data.get('id')
@@ -47,7 +47,7 @@ class PaymentTransaction(models.Model):
         url_params = urls.url_decode(parsed_url.query)
         return {'api_url': checkout_url, 'url_params': url_params}
 
-    def _global_prepare_payment_request_payload(self):
+    def _globalpay_prepare_payment_request_payload(self):
         """ Create the payload for the payment request based on the transaction values.
 
         :return: The request payload
@@ -84,14 +84,14 @@ class PaymentTransaction(models.Model):
         :raise: ValidationError if the data match no transaction
         """
         tx = super()._get_tx_from_notification_data(provider_code, notification_data)
-        if provider_code != 'global' or len(tx) == 1:
+        if provider_code != 'globalpay' or len(tx) == 1:
             return tx
 
         tx = self.search(
-            [('reference', '=', notification_data.get('ref')), ('provider_code', '=', 'global')]
+            [('reference', '=', notification_data.get('ref')), ('provider_code', '=', 'globalpay')]
         )
         if not tx:
-            raise ValidationError("Global: " + _(
+            raise ValidationError("GlobalPay: " + _(
                 "No transaction found matching reference %s.", notification_data.get('ref')
             ))
         return tx
@@ -105,10 +105,10 @@ class PaymentTransaction(models.Model):
         :return: None
         """
         super()._process_notification_data(notification_data)
-        if self.provider_code != 'global':
+        if self.provider_code != 'globalpay':
             return
 
-        payment_data = self.provider_id._global_make_request(
+        payment_data = self.provider_id._globalpay_make_request(
             f'/payments/{self.provider_reference}', method="GET"
         )
 
@@ -130,12 +130,12 @@ class PaymentTransaction(models.Model):
         elif payment_status == 'paid':
             self._set_done()
         elif payment_status in ['expired', 'canceled', 'failed']:
-            self._set_canceled("Global: " + _("Canceled payment with status: %s", payment_status))
+            self._set_canceled("GlobalPay: " + _("Canceled payment with status: %s", payment_status))
         else:
             _logger.info(
                 "received data with invalid payment status (%s) for transaction with reference %s",
                 payment_status, self.reference
             )
             self._set_error(
-                "Global: " + _("Received data with invalid payment status: %s", payment_status)
+                "GlobalPay: " + _("Received data with invalid payment status: %s", payment_status)
             )

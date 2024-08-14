@@ -18,12 +18,12 @@ class PaymentProvider(models.Model):
     _inherit = 'payment.provider'
 
     code = fields.Selection(
-        selection_add=[('global', 'Global')], ondelete={'global': 'set default'}
+        selection_add=[('globalpay', 'GlobalPay')], ondelete={'globalpay': 'set default'}
     )
-    global_api_key = fields.Char(
-        string="GLOBAL API Key",
+    globalpay_api_key = fields.Char(
+        string="GLOBALPAY API Key",
         help="The Test or Live API Key depending on the configuration of the provider",
-        required_if_provider="global", groups="base.group_system"
+        required_if_provider="globalpay", groups="base.group_system"
     )
 
     #=== BUSINESS METHODS ===#
@@ -31,14 +31,14 @@ class PaymentProvider(models.Model):
     def _get_supported_currencies(self):
         """ Override of `payment` to return the supported currencies. """
         supported_currencies = super()._get_supported_currencies()
-        if self.code == 'global':
+        if self.code == 'globalpay':
             supported_currencies = supported_currencies.filtered(
                 lambda c: c.name in const.SUPPORTED_CURRENCIES
             )
         return supported_currencies
 
-    def _global_make_request(self, endpoint, data=None, method='POST'):
-        """ Make a request at global endpoint.
+    def _globalpay_make_request(self, endpoint, data=None, method='POST'):
+        """ Make a request at globalpay endpoint.
 
         Note: self.ensure_one()
 
@@ -57,7 +57,7 @@ class PaymentProvider(models.Model):
         module_version = self.env.ref('base.module_payment_globalpay').installed_version
         headers = {
             "Accept": "application/json",
-            "Authorization": f'Bearer {self.global_api_key}',
+            "Authorization": f'Bearer {self.globalpay_api_key}',
             "Content-Type": "application/json",
             # See https://docs.mollie.com/integration-partners/user-agent-strings
             "User-Agent": f'Odoo/{odoo_version} MollieNativeOdoo/{module_version}',
@@ -72,20 +72,20 @@ class PaymentProvider(models.Model):
                     "Invalid API request at %s with data:\n%s", url, pprint.pformat(data)
                 )
                 raise ValidationError(
-                    "Global: " + _(
-                        "The communication with the API failed. Global gave us the following "
+                    "GlobalPay: " + _(
+                        "The communication with the API failed. GlobalPay gave us the following "
                         "information: %s", response.json().get('detail', '')
                     ))
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             _logger.exception("Unable to reach endpoint at %s", url)
             raise ValidationError(
-                "Global: " + _("Could not establish the connection to the API.")
+                "GlobalPay: " + _("Could not establish the connection to the API.")
             )
         return response.json()
 
     def _get_default_payment_method_codes(self):
         """ Override of `payment` to return the default payment method codes. """
         default_codes = super()._get_default_payment_method_codes()
-        if self.code != 'global':
+        if self.code != 'globalpay':
             return default_codes
         return const.DEFAULT_PAYMENT_METHODS_CODES

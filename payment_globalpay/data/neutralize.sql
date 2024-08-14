@@ -1,3 +1,3 @@
 -- disable mollie payment provider
 UPDATE payment_provider
-   SET global_api_key = NULL;
+   SET globalpay_api_key = NULL;
