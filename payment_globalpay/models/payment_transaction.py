@@ -34,19 +34,28 @@ class PaymentTransaction(models.Model):
         if self.provider_code != 'globalpay':
             return res
 
-        payload = self._globalpay_prepare_payment_request_payload()
-        _logger.info("Sending '/payments' request for link creation:\n%s", pprint.pformat(payload))
-        
-        # Example: you may call a function to send a request to Global Payments API here.
-        # payment_data = self.provider_id._globalpay_make_request('/payments', data=payload)
+        # Prepare the payload with the required fields
+        payload = {
+            'TIMESTAMP': self._get_timestamp(),  # Custom method to generate the timestamp
+            'MERCHANT_ID': "MER_7e3e2c7df34f42819b3edee31022ee3f",
+            'ACCOUNT': 'internet',
+            'ORDER_ID': self.reference,  # Typically the order or transaction reference
+            'AMOUNT': int(self.amount * 100),  # Convert amount to smallest currency unit (e.g., cents)
+            'CURRENCY': self.currency_id.name,
+            'SHA1HASH': self._generate_sha1_hash(),  # Custom method to generate the SHA1 hash
+            'HPP_VERSION': '2',
+            'HPP_CUSTOMER_COUNTRY': self.partner_country_id.code,  # Assuming country code is stored in the partner
+            'HPP_CUSTOMER_FIRSTNAME': self.partner_first_name,  # Assuming partner first name is available
+            'HPP_CUSTOMER_LASTNAME': self.partner_last_name,  # Assuming partner last name is available
+            'MERCHANT_RESPONSE_URL': "http://165.227.98.165:8029/web",  # URL for response handling
+            'HPP_TX_STATUS_URL': "http://165.227.98.165:8029/web",  # URL for transaction status handling
+            'PM_METHODS': 'cards|paypal|testpay|sepapm|sofort',
+        }
 
-        # Example: For now, directly using the sandbox URL as you mentioned
-        sandbox_url = 'https://pay.sandbox.realexpayments.com/pay'
-
-        # Assuming you might want to add some query parameters or additional data to the URL.
+        # Return the URL and POST parameters for rendering
         return {
-            'api_url': sandbox_url,
-            'url_params': {},  # Add any required parameters here
+            'api_url': 'https://pay.sandbox.realexpayments.com/pay',
+            'post_params': payload,
         }
 
     # def _get_specific_rendering_values(self, processing_values):
