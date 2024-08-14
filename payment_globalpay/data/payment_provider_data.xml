@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
-
-    <record id="payment.payment_provider_globalpay" model="payment.provider">
-        <field name="code">globalpay</field>
-        <field name="redirect_form_view_id" ref="redirect_form"/>
-    </record>
-
+<odoo>
+    <data noupdate="1">
+        <record id="payment_provider_globalpay" model="payment.provider">
+            <field name="name">Global Payments</field>
+            <field name="code">globalpay</field>
+            <field name="state">enabled</field>
+            <field name="module_id" ref="base.module_payment_globalpay"/>
+            <field name="redirect_form_view_id" ref="redirect_form"/>
+        </record>
+    </data>
 </odoo>
