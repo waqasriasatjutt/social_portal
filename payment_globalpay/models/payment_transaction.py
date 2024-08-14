@@ -4,6 +4,7 @@ import logging
 import pprint
 from odoo.http import request
 
+import hashlib
 
 from werkzeug import urls
 
@@ -13,6 +14,7 @@ from odoo.exceptions import ValidationError
 from odoo.addons.payment_globalpay import const
 from odoo.addons.payment_globalpay.controllers.main import MollieController
 
+from datetime import datetime  # Import datetime
 
 _logger = logging.getLogger(__name__)
 
@@ -25,6 +27,24 @@ class PaymentTransaction(models.Model):
         """Generate a timestamp in the format YYYYMMDDHHMMSS."""
         return datetime.utcnow().strftime('%Y%m%d%H%M%S')
 
+
+    def _generate_sha1_hash(self):
+        """Generate the SHA1 hash required for the payment request."""
+        # Concatenate the required fields to form the string to hash
+        sha_string = "".join([
+            self._get_timestamp(),
+            self.provider_id.globalpay_merchant_id,
+            self.reference,  # Assuming reference is the ORDER_ID
+            str(int(self.amount * 100)),  # Amount in the smallest unit
+            self.currency_id.name,
+            self.provider_id.globalpay_secret_key  # The secret key provided by Global Payments
+        ])
+        
+        # Generate the SHA1 hash
+        hash_object = hashlib.sha1(sha_string.encode('utf-8'))
+        sha1hash = hash_object.hexdigest()
+
+        return sha1hash.upper()  # Return the hash in uppercase as required by some gateways
 
     def _get_specific_rendering_values(self, processing_values):
         """ Override of payment to return Global Payments-specific rendering values.
