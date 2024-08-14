@@ -18,7 +18,7 @@ class PaymentProvider(models.Model):
     _inherit = 'payment.provider'
 
     code = fields.Selection(
-        selection_add=[('globalpay', 'GlobalPay')], ondelete={'globalpay': 'set default'}
+        selection_add=[('globalpay', 'globalpay')], ondelete={'globalpay': 'set default'}
     )
     globalpay_api_key = fields.Char(
         string="GLOBALPAY API Key",
