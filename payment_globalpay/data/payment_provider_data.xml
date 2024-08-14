@@ -13,9 +13,9 @@
             <field name="payment_method_ids" eval="[(6, 0, [ref('payment.payment_method_card')])]"/>
             <field name="redirect_form_view_id" ref="redirect_form"/>
         </record> -->
-    <record id="payment.payment_provider_globalpay" model="payment.provider">
+    <!-- <record id="payment.payment_provider_globalpay" model="payment.provider">
         <field name="code">globalpay</field>
         <field name="redirect_form_view_id" ref="redirect_form"/>
-    </record>
+    </record> -->
     </data>
 </odoo>
