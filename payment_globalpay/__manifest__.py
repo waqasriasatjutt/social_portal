@@ -11,7 +11,7 @@
     'data': [
         'views/payment_globalpay_templates.xml',
         'views/payment_provider_views.xml',
-        'data/payment_provider_data.xml',
+        # 'data/payment_provider_data.xml',
         'security/ir.model.access.csv',
     ],
     'installable': True,
