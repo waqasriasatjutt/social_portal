@@ -3,16 +3,16 @@
 from odoo.addons.payment.tests.common import PaymentCommon
 
 
-class MollieCommon(PaymentCommon):
+class GlobalPayCommon(PaymentCommon):
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
-        cls.mollie = cls._prepare_provider('mollie', update_values={
-            'mollie_api_key': 'dummy',
+        cls.mollie = cls._prepare_provider('globalpay', update_values={
+            'globalpay_api_key': 'dummy',
         })
-        cls.provider = cls.mollie
+        cls.provider = cls.globalpay
         cls.currency = cls.currency_euro
 
         cls.notification_data = {
