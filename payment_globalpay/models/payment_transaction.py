@@ -54,7 +54,7 @@ class PaymentTransaction(models.Model):
         # Prepare the payload
         payload = {
             'TIMESTAMP': self._get_timestamp(),
-            'MERCHANT_ID': "MER_7e3e2c7df34f42819b3edee31022ee3f",
+            'MERCHANT_ID': "baburrestaurant",
             'ACCOUNT': 'internet',
             'ORDER_ID': self.reference,
             'AMOUNT': int(self.amount * 100),
