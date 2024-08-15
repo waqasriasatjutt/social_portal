@@ -47,43 +47,33 @@ class PaymentTransaction(models.Model):
         return sha1hash.upper()  # Return the hash in uppercase as required by some gateways
 
     def _get_specific_rendering_values(self, processing_values):
-        """ Override of payment to return Global Payments-specific rendering values.
-
-        Note: self.ensure_one() from `_get_processing_values`
-
-        :param dict processing_values: The generic and specific processing values of the transaction
-        :return: The dict of provider-specific rendering values
-        :rtype: dict
-        """
         res = super()._get_specific_rendering_values(processing_values)
         if self.provider_code != 'globalpay':
             return res
 
+        # Prepare the payload
+        payload = {
+            'TIMESTAMP': self._get_timestamp(),
+            'MERCHANT_ID': "MER_7e3e2c7df34f42819b3edee31022ee3f",
+            'ACCOUNT': 'internet',
+            'ORDER_ID': self.reference,
+            'AMOUNT': int(self.amount * 100),
+            'CURRENCY': self.currency_id.name,
+            'SHA1HASH': self._generate_sha1_hash(),
+            'HPP_VERSION': '2',
+            'HPP_CUSTOMER_COUNTRY': self.partner_country_id.code,
+            'HPP_CUSTOMER_FIRSTNAME': self.partner_id.name.split()[0] if self.partner_id.name else '',
+            'HPP_CUSTOMER_LASTNAME': ' '.join(self.partner_id.name.split()[1:]) if self.partner_id.name else '',
+            'MERCHANT_RESPONSE_URL': "http://165.227.98.165:8029/web",
+            'HPP_TX_STATUS_URL': "http://165.227.98.165:8029/web",
+            'PM_METHODS': 'cards|paypal|testpay|sepapm|sofort',
+        }
 
-        payload = self._globalpay_prepare_payment_request_payload()
+        _logger.info("GlobalPay Payload: %s", pprint.pformat(payload))
 
-        # Prepare the payload with the required fields
-        # payload = {
-        #     'TIMESTAMP': self._get_timestamp(),  # Custom method to generate the timestamp
-        #     'MERCHANT_ID': "MER_7e3e2c7df34f42819b3edee31022ee3f",
-        #     'ACCOUNT': 'internet',
-        #     'ORDER_ID': self.reference,  # Typically the order or transaction reference
-        #     'AMOUNT': int(self.amount * 100),  # Convert amount to smallest currency unit (e.g., cents)
-        #     'CURRENCY': self.currency_id.name,
-        #     'SHA1HASH': self._generate_sha1_hash(),  # Custom method to generate the SHA1 hash
-        #     'HPP_VERSION': '2',
-        #     'HPP_CUSTOMER_COUNTRY': self.partner_country_id.code,  # Assuming country code is stored in the partner
-        #     'HPP_CUSTOMER_FIRSTNAME': self.partner_id.name,  # Assuming partner first name is available
-        #     'HPP_CUSTOMER_LASTNAME': self.partner_id.name,  # Assuming partner last name is available
-        #     'MERCHANT_RESPONSE_URL': "http://165.227.98.165:8029/web",  # URL for response handling
-        #     'HPP_TX_STATUS_URL': "http://165.227.98.165:8029/web",  # URL for transaction status handling
-        #     'PM_METHODS': 'cards|paypal|testpay|sepapm|sofort',
-        # }
-
-        # Return the URL and POST parameters for rendering
         return {
             'api_url': 'https://pay.sandbox.realexpayments.com/pay',
-            'post_params': payload,
+            'post_params': "payload",
         }
 
     # def _get_specific_rendering_values(self, processing_values):
@@ -127,39 +117,20 @@ class PaymentTransaction(models.Model):
         redirect_url = urls.url_join(base_url, MollieController._return_url)
         webhook_url = urls.url_join(base_url, MollieController._webhook_url)
 
-        payload = {
-            'TIMESTAMP': self._get_timestamp(),  # Custom method to generate the timestamp
-            'MERCHANT_ID': "MER_7e3e2c7df34f42819b3edee31022ee3f",
-            'ACCOUNT': 'internet',
-            'ORDER_ID': self.reference,  # Typically the order or transaction reference
-            'AMOUNT': int(self.amount * 100),  # Convert amount to smallest currency unit (e.g., cents)
-            'CURRENCY': self.currency_id.name,
-            'SHA1HASH': self._generate_sha1_hash(),  # Custom method to generate the SHA1 hash
-            'HPP_VERSION': '2',
-            'HPP_CUSTOMER_COUNTRY': self.partner_country_id.code,  # Assuming country code is stored in the partner
-            'HPP_CUSTOMER_FIRSTNAME': self.partner_id.name,  # Assuming partner first name is available
-            'HPP_CUSTOMER_LASTNAME': self.partner_id.name,  # Assuming partner last name is available
-            'MERCHANT_RESPONSE_URL': "http://165.227.98.165:8029/web",  # URL for response handling
-            'HPP_TX_STATUS_URL': "http://165.227.98.165:8029/web",  # URL for transaction status handling
-            'PM_METHODS': 'cards|paypal|testpay|sepapm|sofort',
-        }
-
-
         return {
-            'TIMESTAMP': self._get_timestamp(),  # Custom method to generate the timestamp
-            'MERCHANT_ID': "MER_7e3e2c7df34f42819b3edee31022ee3f",
-            'ACCOUNT': 'internet',
-            'ORDER_ID': self.reference,  # Typically the order or transaction reference
-            'AMOUNT': int(self.amount * 100),  # Convert amount to smallest currency unit (e.g., cents)
-            'CURRENCY': self.currency_id.name,
-            'SHA1HASH': self._generate_sha1_hash(),  # Custom method to generate the SHA1 hash
-            'HPP_VERSION': '2',
-            'HPP_CUSTOMER_COUNTRY': self.partner_country_id.code,  # Assuming country code is stored in the partner
-            'HPP_CUSTOMER_FIRSTNAME': self.partner_id.name,  # Assuming partner first name is available
-            'HPP_CUSTOMER_LASTNAME': self.partner_id.name,  # Assuming partner last name is available
-            'MERCHANT_RESPONSE_URL': "http://165.227.98.165:8029/web",  # URL for response handling
-            'HPP_TX_STATUS_URL': "http://165.227.98.165:8029/web",  # URL for transaction status handling
-            'PM_METHODS': 'cards|paypal|testpay|sepapm|sofort',
+            'description': self.reference,
+            'amount': {
+                'currency': self.currency_id.name,
+                'value': f"{self.amount:.2f}",
+            },
+            'locale': user_lang if user_lang in const.SUPPORTED_LOCALES else 'en_US',
+            'method': [const.PAYMENT_METHODS_MAPPING.get(
+                self.payment_method_code, self.payment_method_code
+            )],
+            # Since Mollie does not provide the transaction reference when returning from
+            # redirection, we include it in the redirect URL to be able to match the transaction.
+            'redirectUrl': f'{redirect_url}?ref={self.reference}',
+            'webhookUrl': f'{webhook_url}?ref={self.reference}',
         }
 
     def _get_tx_from_notification_data(self, provider_code, notification_data):
