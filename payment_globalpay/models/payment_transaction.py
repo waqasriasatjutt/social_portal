@@ -62,7 +62,7 @@ class PaymentTransaction(models.Model):
         # Prepare the payload with the required fields
         payload = {
             'TIMESTAMP': self._get_timestamp(),  # Custom method to generate the timestamp
-            'MERCHANT_ID': "MER_7e3e2c7df34f42819b3edee31022ee3f",
+            'MERCHANT_ID': "baburrestaurant",
             'ACCOUNT': 'internet',
             'ORDER_ID': self.reference,  # Typically the order or transaction reference
             'AMOUNT': int(self.amount * 100),  # Convert amount to smallest currency unit (e.g., cents)
