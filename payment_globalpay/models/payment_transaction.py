@@ -33,11 +33,11 @@ class PaymentTransaction(models.Model):
         # Concatenate the required fields to form the string to hash
         sha_string = "".join([
             self._get_timestamp(),
-            "MER_7e3e2c7df34f42819b3edee31022ee3f",
+            "baburrestaurant",
             self.reference,  # Assuming reference is the ORDER_ID
             str(int(self.amount * 100)),  # Amount in the smallest unit
             self.currency_id.name,
-            "MER_7e3e2c7df34f42819b3edee31022ee3f"  # The secret key provided by Global Payments
+            "baburrestaurant"  # The secret key provided by Global Payments
         ])
         
         # Generate the SHA1 hash
