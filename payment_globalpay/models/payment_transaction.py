@@ -73,7 +73,7 @@ class PaymentTransaction(models.Model):
 
         return {
             'api_url': 'https://pay.sandbox.realexpayments.com/pay',
-            'post_params': "payload",
+            'post_params': payload,
         }
 
     # def _get_specific_rendering_values(self, processing_values):
