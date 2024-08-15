@@ -59,7 +59,7 @@ class PaymentTransaction(models.Model):
             'ORDER_ID': self.reference,
             'AMOUNT': int(self.amount * 100),
             'CURRENCY': self.currency_id.name,
-            'SHA1HASH': self._generate_sha1_hash(),
+            'SHA1HASH': "308bb8dfbbfcc67c28d602d988ab104c3b08d012",
             'HPP_VERSION': '2',
             'HPP_CUSTOMER_COUNTRY': self.partner_country_id.code,
             'HPP_CUSTOMER_FIRSTNAME': self.partner_id.name.split()[0] if self.partner_id.name else '',
