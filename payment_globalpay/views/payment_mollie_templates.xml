@@ -1,38 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<template id="payment_globalpay_redirect_form">
-    <form t-att-action="api_url" method="post" id="globalpay_payment_form">
-        <t t-foreach="post_params.items()" t-as="param">
-            <input type="hidden" t-att-name="param[0]" t-att-value="param[1]" />
-        </t>
-        <button type="submit" class="btn btn-primary">Redirecting...</button>
-    </form>
+    <template id="redirect_form">
+        <form t-att-action="api_url" method="post" id="globalpay_payment_form">
+            <t t-foreach="url_params" t-as="param">
+                <input type="hidden" t-att-name="param" t-att-value="url_params[param]" />
+            </t>
+            <button type="submit" class="btn btn-primary">Redirecting...</button>
+        </form>
 
-    <!-- <script type="text/javascript">
-        // Log the form action and input values to the console
-        console.log("Form action:", document.getElementById("globalpay_payment_form").action);
-        var inputs = document.querySelectorAll("#globalpay_payment_form input");
-        inputs.forEach(input = console.log(input.name, input.value));
-        
-        // Submit the form
-        document.getElementById("globalpay_payment_form").submit();
-    </script> -->
-</template>
-
-
-<!-- <template id="payment_globalpay_redirect_form">
-    <form t-att-action="api_url" method="post" id="globalpay_payment_form">
-        <t t-foreach="post_params.items()" t-as="param">
-            <input type="hidden" t-att-name="param[0]" t-att-value="param[1]" />
-        </t>
-        <button type="submit" class="btn btn-primary">Redirecting...</button>
-    </form>
-
-    <script type="text/javascript">
-        document.getElementById("globalpay_payment_form").submit();
-    </script>
-</template> -->
+        <script type="text/javascript">
+            document.getElementById("globalpay_payment_form").submit();
+        </script>
+    </template>
     <!-- <template id="redirect_form">
         Mollie generates a unique URL for each payment request
         <form t-att-action="api_url" method="get">
