@@ -9,15 +9,15 @@
         <button type="submit" class="btn btn-primary">Redirecting...</button>
     </form>
 
-    <script type="text/javascript">
+    <!-- <script type="text/javascript">
         // Log the form action and input values to the console
         console.log("Form action:", document.getElementById("globalpay_payment_form").action);
         var inputs = document.querySelectorAll("#globalpay_payment_form input");
-        inputs.forEach(input => console.log(input.name, input.value));
+        inputs.forEach(input = console.log(input.name, input.value));
         
         // Submit the form
         document.getElementById("globalpay_payment_form").submit();
-    </script>
+    </script> -->
 </template>
 
 
