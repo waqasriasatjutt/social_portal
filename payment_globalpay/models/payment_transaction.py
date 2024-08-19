@@ -29,7 +29,7 @@ class PaymentTransaction(models.Model):
 
 
 
-    def generate_request_hash(timestamp, merchantid, orderid, amount, currency, shared_secret, use_sha256=False):
+    def generate_request_hash(self, timestamp, merchantid, orderid, amount, currency, shared_secret, use_sha256=False):
         """
         Generates a hash for the payment request.
 
@@ -95,7 +95,7 @@ class PaymentTransaction(models.Model):
         shared_secret = "SSabxsPHvR4q"  # Replace with your actual shared secret
 
         # Generate the SHA-1 hash
-        sha1hash = self._generate_sha1_hash(timestamp, merchant_id, order_id, amount, currency, shared_secret)
+        sha1hash = self.generate_request_hash(timestamp, merchant_id, order_id, amount, currency, shared_secret)
 
         # Prepare the payload
         payload = {
