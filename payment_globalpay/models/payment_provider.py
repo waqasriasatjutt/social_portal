@@ -29,7 +29,7 @@ class PaymentProvider(models.Model):
     globalpay_shared_secret = fields.Char(
         string="Shared Secret",
         help="The Test or Live API Key depending on the configuration of the provider",
-        required_if_provider="globalpay", groups="base.group_system"
+        required_if_provider="globalpay", groups="base.group_system", default="eoPSw5Ts9K"
     )
 
     #=== BUSINESS METHODS ===#
