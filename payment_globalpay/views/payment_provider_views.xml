@@ -8,7 +8,8 @@
         <field name="arch" type="xml">
             <group name="provider_credentials" position="inside">
                 <group invisible="code != 'globalpay'">
-                    <field name="globalpay_api_key" string="API Key" required="code == 'globalpay'"/>
+                    <field name="globalpay_api_key" string="Merchant ID" required="code == 'globalpay'"/>
+                    <field name="globalpay_shared_secret" string="Shared Secret" required="code == 'globalpay'"/>
                 </group>
             </group>
         </field>

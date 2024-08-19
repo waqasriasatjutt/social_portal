@@ -88,11 +88,11 @@ class PaymentTransaction(models.Model):
 
         # Prepare the timestamp and other necessary values
         timestamp = self._get_timestamp()
-        merchant_id = "baburrestaurant"
+        merchant_id = self.provider_id.globalpay_api_key
         order_id = self.reference
         amount = int(self.amount * 100)
         currency = self.currency_id.name
-        shared_secret = "SSabxsPHvR4q"  # Replace with your actual shared secret
+        shared_secret = self.provider_id.globalpay_shared_secret  # Replace with your actual shared secret
 
         # Generate the SHA-1 hash
         sha1hash = self.generate_request_hash(timestamp, merchant_id, order_id, amount, currency, shared_secret)
@@ -100,7 +100,7 @@ class PaymentTransaction(models.Model):
         # Prepare the payload
         payload = {
             'TIMESTAMP': timestamp,
-            'MERCHANT_ID': merchant_id,
+            'MERCHANT_ID': self.provider_id.globalpay_api_key,
             'ACCOUNT': 'internet',
             'ORDER_ID': order_id,
             'AMOUNT': amount,

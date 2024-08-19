@@ -22,7 +22,12 @@ class PaymentProvider(models.Model):
         selection_add=[('globalpay', 'globalpay')], ondelete={'globalpay': 'set default'}
     )
     globalpay_api_key = fields.Char(
-        string="GLOBALPAY API Key",
+        string="Merchant ID",
+        help="The Test or Live API Key depending on the configuration of the provider",
+        required_if_provider="globalpay", groups="base.group_system"
+    )
+    globalpay_shared_secret = fields.Char(
+        string="Shared Secret",
         help="The Test or Live API Key depending on the configuration of the provider",
         required_if_provider="globalpay", groups="base.group_system"
     )
