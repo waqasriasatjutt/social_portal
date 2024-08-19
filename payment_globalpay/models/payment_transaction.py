@@ -28,6 +28,43 @@ class PaymentTransaction(models.Model):
         return datetime.utcnow().strftime('%Y%m%d%H%M%S')
 
 
+
+    def generate_request_hash(timestamp, merchantid, orderid, amount, currency, shared_secret, use_sha256=False):
+        """
+        Generates a hash for the payment request.
+
+        :param timestamp: The timestamp of the request.
+        :param merchantid: The merchant ID.
+        :param orderid: The order ID.
+        :param amount: The transaction amount.
+        :param currency: The transaction currency.
+        :param shared_secret: The shared secret for the merchant.
+        :param use_sha256: Boolean flag to use SHA-256 instead of SHA-1.
+        :return: The final hash to be added to the request.
+        """
+
+        # Step 1: Create the initial string
+        initial_string = f"{timestamp}.{merchantid}.{orderid}.{amount}.{currency}"
+
+        # Step 2: Hash the initial string using the selected algorithm
+        if use_sha256:
+            initial_hash = hashlib.sha256(initial_string.encode('utf-8')).hexdigest()
+        else:
+            initial_hash = hashlib.sha1(initial_string.encode('utf-8')).hexdigest()
+
+        # Step 3: Concatenate the hashed string with the shared secret
+        concatenated_string = f"{initial_hash}.{shared_secret}"
+
+        # Step 4: Hash the concatenated string again using the selected algorithm
+        if use_sha256:
+            final_hash = hashlib.sha256(concatenated_string.encode('utf-8')).hexdigest()
+        else:
+            final_hash = hashlib.sha1(concatenated_string.encode('utf-8')).hexdigest()
+
+        return final_hash
+
+
+
     def _generate_sha1_hash(self):
         """Generate the SHA1 hash required for the payment request."""
         # Concatenate the required fields to form the string to hash
@@ -36,9 +73,7 @@ class PaymentTransaction(models.Model):
             "baburrestaurant",
             self.reference,  # Assuming reference is the ORDER_ID
             str(int(self.amount * 100)),  # Amount in the smallest unit
-            self.currency_id.name,
-            "baburrestaurant"  # The secret key provided by Global Payments
-        ])
+            self.currency_id.name])
         
         # Generate the SHA1 hash
         hash_object = hashlib.sha1(sha_string.encode('utf-8'))
@@ -51,15 +86,26 @@ class PaymentTransaction(models.Model):
         if self.provider_code != 'globalpay':
             return res
 
+        # Prepare the timestamp and other necessary values
+        timestamp = self._get_timestamp()
+        merchant_id = "baburrestaurant"
+        order_id = self.reference
+        amount = int(self.amount * 100)
+        currency = self.currency_id.name
+        shared_secret = "SSabxsPHvR4q"  # Replace with your actual shared secret
+
+        # Generate the SHA-1 hash
+        sha1hash = self._generate_sha1_hash(timestamp, merchant_id, order_id, amount, currency, shared_secret)
+
         # Prepare the payload
         payload = {
-            'TIMESTAMP': self._get_timestamp(),
-            'MERCHANT_ID': "baburrestaurant",
+            'TIMESTAMP': timestamp,
+            'MERCHANT_ID': merchant_id,
             'ACCOUNT': 'internet',
-            'ORDER_ID': self.reference,
-            'AMOUNT': int(self.amount * 100),
-            'CURRENCY': self.currency_id.name,
-            'SHA1HASH': "308bb8dfbbfcc67c28d602d988ab104c3b08d012",
+            'ORDER_ID': order_id,
+            'AMOUNT': amount,
+            'CURRENCY': currency,
+            'SHA1HASH': sha1hash,
             'HPP_VERSION': '2',
             'HPP_CUSTOMER_COUNTRY': self.partner_country_id.code,
             'HPP_CUSTOMER_FIRSTNAME': self.partner_id.name.split()[0] if self.partner_id.name else '',
