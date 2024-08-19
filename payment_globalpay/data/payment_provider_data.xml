@@ -5,7 +5,8 @@
             <field name="name">Global Payments</field>
             <field name="code">globalpay</field>
             <field name="state">enabled</field>
-            <field name="globalpay_api_key">put key here</field>
+            <field name="globalpay_api_key">dev607584939573742086</field>
+            <field name="globalpay_shared_secret">eoPSw5Ts9K</field>
             <field name="module_id" ref="base.module_payment_globalpay"/>
             <field name="redirect_form_view_id" ref="redirect_form"/>
         </record>
