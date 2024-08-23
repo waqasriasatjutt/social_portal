@@ -10,6 +10,7 @@
                 <group invisible="code != 'globalpay'">
                     <field name="globalpay_api_key" string="Merchant ID" required="code == 'globalpay'"/>
                     <field name="globalpay_shared_secret" string="Shared Secret" required="code == 'globalpay'"/>
+                    <field name="globalpay_response_url" string="Response URL" required="code == 'globalpay'"/>
                 </group>
             </group>
         </field>

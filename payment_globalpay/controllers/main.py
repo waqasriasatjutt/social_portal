@@ -33,7 +33,7 @@ class MollieController(http.Controller):
                           embedded in the return URL
         """
         _logger.info("handling redirection from Mollie with data:\n%s", pprint.pformat(data))
-        request.env['payment.transaction'].sudo()._handle_notification_data('mollie', data)
+        request.env['payment.transaction'].sudo()._handle_notification_data('globalpay', data)
         return request.redirect('/payment/status')
 
     @http.route(_webhook_url, type='http', auth='public', methods=['POST'], csrf=False)
@@ -47,7 +47,7 @@ class MollieController(http.Controller):
         """
         _logger.info("notification received from Mollie with data:\n%s", pprint.pformat(data))
         try:
-            request.env['payment.transaction'].sudo()._handle_notification_data('mollie', data)
+            request.env['payment.transaction'].sudo()._handle_notification_data('globalpay', data)
         except ValidationError:  # Acknowledge the notification to avoid getting spammed
             _logger.exception("unable to handle the notification data; skipping to acknowledge")
         return ''  # Acknowledge the notification

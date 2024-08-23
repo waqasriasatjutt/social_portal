@@ -110,8 +110,8 @@ class PaymentTransaction(models.Model):
             'HPP_CUSTOMER_COUNTRY': self.partner_country_id.code,
             'HPP_CUSTOMER_FIRSTNAME': self.partner_id.name.split()[0] if self.partner_id.name else '',
             'HPP_CUSTOMER_LASTNAME': ' '.join(self.partner_id.name.split()[1:]) if self.partner_id.name else '',
-            'MERCHANT_RESPONSE_URL': "http://165.227.98.165:8029/web",
-            'HPP_TX_STATUS_URL': "http://165.227.98.165:8029/web",
+            'MERCHANT_RESPONSE_URL': self.provider_id.globalpay_response_url,
+            'HPP_TX_STATUS_URL': self.provider_id.globalpay_response_url,
             'PM_METHODS': 'cards|paypal|testpay|sepapm|sofort',
         }
 
