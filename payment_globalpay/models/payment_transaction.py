@@ -117,7 +117,7 @@ class PaymentTransaction(models.Model):
             'HPP_BILLING_COUNTRY': self.parner_id.country_id.name,
             'HPP_SHIPPING_STREET1': self.partner_id.street,
             'HPP_SHIPPING_STREET2': self.partner_id.street,
-            'HPP_SHIPPING_CITY': self.parner_id.city,
+            'HPP_SHIPPING_CITY': self.partner_id.city,
             'HPP_CUSTOMER_FIRSTNAME': self.partner_id.name.split()[0] if self.partner_id.name else '',
             'HPP_CUSTOMER_LASTNAME': ' '.join(self.partner_id.name.split()[1:]) if self.partner_id.name else '',
             'MERCHANT_RESPONSE_URL': self.provider_id.globalpay_response_url,
