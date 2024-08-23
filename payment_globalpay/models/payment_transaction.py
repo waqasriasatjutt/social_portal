@@ -108,6 +108,7 @@ class PaymentTransaction(models.Model):
             'SHA1HASH': sha1hash,
             'HPP_VERSION': '2',
             'HPP_CUSTOMER_COUNTRY': self.partner_country_id.code,
+            'HPP_BILLING_CITY': self.partner_id.city,
             'HPP_CUSTOMER_FIRSTNAME': self.partner_id.name.split()[0] if self.partner_id.name else '',
             'HPP_CUSTOMER_LASTNAME': ' '.join(self.partner_id.name.split()[1:]) if self.partner_id.name else '',
             'MERCHANT_RESPONSE_URL': self.provider_id.globalpay_response_url,
