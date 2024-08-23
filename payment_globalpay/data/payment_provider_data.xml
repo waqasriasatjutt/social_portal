@@ -7,6 +7,7 @@
             <field name="state">enabled</field>
             <field name="globalpay_api_key">dev607584939573742086</field>
             <field name="globalpay_shared_secret">eoPSw5Ts9K</field>
+            <field name="globalpay_response_url">localhost</field>
             <field name="module_id" ref="base.module_payment_globalpay"/>
             <field name="redirect_form_view_id" ref="redirect_form"/>
         </record>
