@@ -118,14 +118,14 @@ class PaymentTransaction(models.Model):
     'HPP_BILLING_STREET3': self.partner_id.street2 or '',
     'HPP_BILLING_CITY': self.partner_id.city,
     'HPP_BILLING_POSTALCODE': self.partner_id.zip,
-    'HPP_BILLING_COUNTRY': self.partner_id.country_id.code or '826',  # Use country code (numeric format like '826')
+    'HPP_BILLING_COUNTRY': '826',  # Use country code (numeric format like '826')
     'HPP_SHIPPING_STREET1': self.partner_id.street,
     'HPP_SHIPPING_STREET2': self.partner_id.street2 or '',
     'HPP_SHIPPING_STREET3': self.partner_id.street2 or '',
     'HPP_SHIPPING_CITY': self.partner_id.city,
     'HPP_SHIPPING_STATE': self.partner_id.state_id.code or '',
     'HPP_SHIPPING_POSTALCODE': self.partner_id.zip,
-    'HPP_SHIPPING_COUNTRY': self.partner_id.country_id.code or '826',  # Use country code (numeric format like '840')
+    'HPP_SHIPPING_COUNTRY': '826',  # Use country code (numeric format like '840')
     'HPP_ADDRESS_MATCH_INDICATOR': 'FALSE',
     'HPP_CHALLENGE_REQUEST_INDICATOR': 'NO_PREFERENCE',
     'BILLING_CODE': f"{self.partner_id.zip}|{self.partner_id.street}",
