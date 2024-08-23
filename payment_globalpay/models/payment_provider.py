@@ -31,6 +31,11 @@ class PaymentProvider(models.Model):
         help="The Test or Live API Key depending on the configuration of the provider",
         required_if_provider="globalpay", groups="base.group_system", default="eoPSw5Ts9K"
     )
+    globalpay_response_url = fields.Char(
+        string="Response URL",
+        help="Response URL",
+        required_if_provider="globalpay", groups="base.group_system"
+    )
 
     #=== BUSINESS METHODS ===#
 
