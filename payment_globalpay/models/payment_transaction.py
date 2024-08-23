@@ -114,7 +114,7 @@ class PaymentTransaction(models.Model):
             'HPP_BILLING_STREET1': self.partner_id.street,
             'HPP_BILLING_STREET2': self.partner_id.street,
             'HPP_BILLING_STREET3': self.partner_id.street,
-            'HPP_BILLING_COUNTRY': self.parner_id.country_id.name,
+            'HPP_BILLING_COUNTRY': self.partner_id.country_id.name,
             'HPP_SHIPPING_STREET1': self.partner_id.street,
             'HPP_SHIPPING_STREET2': self.partner_id.street,
             'HPP_SHIPPING_CITY': self.partner_id.city,
