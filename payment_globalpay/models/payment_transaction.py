@@ -99,31 +99,47 @@ class PaymentTransaction(models.Model):
 
         # Prepare the payload
         payload = {
-            'TIMESTAMP': timestamp,
-            'MERCHANT_ID': self.provider_id.globalpay_api_key,
-            'ACCOUNT': 'internet',
-            'ORDER_ID': order_id,
-            'AMOUNT': amount,
-            'CURRENCY': currency,
-            'SHA1HASH': sha1hash,
-            'HPP_VERSION': '2',
-            'HPP_CUSTOMER_COUNTRY': self.partner_country_id.code,
-            'HPP_BILLING_CITY': self.partner_id.city,
-            'HPP_CUSTOMER_EMAIL': self.partner_id.email,
-            'HPP_CUSTOMER_PHONENUMBER_MOBILE': self.partner_id.phone,
-            'HPP_BILLING_STREET1': self.partner_id.street,
-            'HPP_BILLING_STREET2': self.partner_id.street,
-            'HPP_BILLING_STREET3': self.partner_id.street,
-            'HPP_BILLING_COUNTRY': self.partner_country_id.code,
-            'HPP_SHIPPING_STREET1': self.partner_id.street,
-            'HPP_SHIPPING_STREET2': self.partner_id.street,
-            'HPP_SHIPPING_CITY': self.partner_id.city,
-            'HPP_CUSTOMER_FIRSTNAME': self.partner_id.name.split()[0] if self.partner_id.name else '',
-            'HPP_CUSTOMER_LASTNAME': ' '.join(self.partner_id.name.split()[1:]) if self.partner_id.name else '',
-            'MERCHANT_RESPONSE_URL': self.provider_id.globalpay_response_url,
-            'HPP_TX_STATUS_URL': self.provider_id.globalpay_response_url,
-            'PM_METHODS': 'cards|paypal|testpay|sepapm|sofort',
-        }
+    'TIMESTAMP': timestamp,
+    'MERCHANT_ID': self.provider_id.globalpay_api_key,
+    'ACCOUNT': 'internet',
+    'ORDER_ID': order_id,
+    'AMOUNT': amount,
+    'CURRENCY': currency,
+    'SHA1HASH': sha1hash,
+    'HPP_VERSION': '2',
+    'HPP_CHANNEL': 'ECOM',
+    'HPP_LANG': 'en',
+    'AUTO_SETTLE_FLAG': '1',
+    'COMMENT1': 'Mobile Channel',
+    'HPP_CUSTOMER_EMAIL': self.partner_id.email,
+    'HPP_CUSTOMER_PHONENUMBER_MOBILE': f"{self.partner_id.country_id.phone_code}|{self.partner_id.phone}",
+    'HPP_BILLING_STREET1': self.partner_id.street,
+    'HPP_BILLING_STREET2': self.partner_id.street2 or '',
+    'HPP_BILLING_STREET3': self.partner_id.street3 or '',
+    'HPP_BILLING_CITY': self.partner_id.city,
+    'HPP_BILLING_POSTALCODE': self.partner_id.zip,
+    'HPP_BILLING_COUNTRY': self.partner_id.country_id.code,  # Use country code (numeric format like '826')
+    'HPP_SHIPPING_STREET1': self.partner_id.street,
+    'HPP_SHIPPING_STREET2': self.partner_id.street2 or '',
+    'HPP_SHIPPING_STREET3': self.partner_id.street3 or '',
+    'HPP_SHIPPING_CITY': self.partner_id.city,
+    'HPP_SHIPPING_STATE': self.partner_id.state_id.code or '',
+    'HPP_SHIPPING_POSTALCODE': self.partner_id.zip,
+    'HPP_SHIPPING_COUNTRY': self.partner_id.country_id.code,  # Use country code (numeric format like '840')
+    'HPP_ADDRESS_MATCH_INDICATOR': 'FALSE',
+    'HPP_CHALLENGE_REQUEST_INDICATOR': 'NO_PREFERENCE',
+    'BILLING_CODE': f"{self.partner_id.zip}|{self.partner_id.street}",
+    'BILLING_CO': self.partner_id.country_id.code,  # Use country ISO code (alpha-2 like 'GB')
+    'SHIPPING_CODE': f"{self.partner_id.zip}|{self.partner_id.street}",
+    'SHIPPING_CO': self.partner_id.country_id.code,  # Use country ISO code (alpha-2 like 'US')
+    'CUST_NUM': self.partner_id.ref or 'default_customer_id',
+    'VAR_REF': 'Acme Corporation',  # Replace with the actual reference or company name
+    'PROD_ID': 'SKU1000054',  # Replace with actual product ID if available
+    'MERCHANT_RESPONSE_URL': self.provider_id.globalpay_response_url,
+    'CARD_PAYMENT_BUTTON': 'Pay Invoice',
+    'CUSTOM_FIELD_NAME': 'Custom Field Data',
+    'PM_METHODS': 'cards|paypal|testpay|sepapm|sofort',
+}
 
         _logger.info("GlobalPay Payload: %s", pprint.pformat(payload))
 

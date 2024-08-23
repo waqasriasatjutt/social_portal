@@ -14,6 +14,52 @@ class MollieController(http.Controller):
     _return_url = '/payment/mollie/return'
     _webhook_url = '/payment/mollie/webhook'
 
+
+    @http.route('/payment/globalpay/return', type='http', auth='public', csrf=False)
+    def globalpay_return(self, **post):
+        # Extract relevant data from the POST request
+        result = post.get('RESULT')
+        message = post.get('MESSAGE')
+        order_id = post.get('ORDER_ID')
+        sha1hash = post.get('SHA1HASH')
+
+        # Validate the SHA1HASH to ensure the data is not tampered with
+        computed_sha1hash = self._compute_sha1hash(post)
+        if sha1hash != computed_sha1hash:
+            return request.render('your_module.payment_invalid', {})
+
+        # Find the corresponding sale order
+        sale_order = request.env['sale.order'].sudo().search([('name', '=', order_id)], limit=1)
+
+        if not sale_order:
+            return request.render('your_module.payment_invalid', {})
+
+        # Check the result and update the order accordingly
+        if result == '00':  # Payment successful
+            sale_order.action_confirm()
+            sale_order.message_post(body=f"Payment successful. Message: {message}")
+            return request.render('your_module.payment_success', {'sale_order': sale_order})
+        else:  # Payment failed
+            sale_order.message_post(body=f"Payment failed. Message: {message}")
+            return request.render('your_module.payment_failed', {'sale_order': sale_order})
+
+    def _compute_sha1hash(self, post):
+        # Recompute the SHA1 hash to validate the integrity of the data
+        # Ensure that the keys are in the correct order as per the documentation
+        to_hash = f"{post.get('TIMESTAMP')}." \
+                  f"{post.get('MERCHANT_ID')}." \
+                  f"{post.get('ORDER_ID')}." \
+                  f"{post.get('AMOUNT')}." \
+                  f"{post.get('CURRENCY')}." \
+                  f"{post.get('RESULT')}." \
+                  f"{post.get('MESSAGE')}." \
+                  f"{post.get('PASREF')}." \
+                  f"{post.get('AUTHCODE')}"
+        secret_key = request.env['ir.config_parameter'].sudo().get_param('globalpay.secret_key')
+        sha1 = hashlib.sha1(to_hash.encode('utf-8')).hexdigest()
+        sha1hash = hashlib.sha1(f"{sha1}.{secret_key}".encode('utf-8')).hexdigest().upper()
+        return sha1hash
+
     @http.route(
         _return_url, type='http', auth='public', methods=['GET', 'POST'], csrf=False,
         save_session=False
